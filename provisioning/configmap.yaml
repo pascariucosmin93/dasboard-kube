@@ -1,0 +1,22 @@
+---
+# Kustomize generates this ConfigMap from the JSON files in dashboards/.
+# The Grafana sidecar (grafana-sc-dashboard) watches for the label grafana_dashboard=1
+# and auto-loads any ConfigMap with that label into Grafana.
+#
+# Apply via Kustomize:
+#   kubectl apply -k provisioning/
+#
+# Or generate and apply manually:
+#   kubectl create configmap grafana-dashboards-kube \
+#     --from-file=../dashboards/cilium-bgp.json \
+#     --from-file=../dashboards/kubernetes-cluster-status.json \
+#     -n monitoring --dry-run=client -o yaml \
+#   | kubectl label --local -f - grafana_dashboard=1 --dry-run=client -o yaml \
+#   | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-kube
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
